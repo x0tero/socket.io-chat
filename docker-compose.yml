@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+        dadosBackend:
+                restart: always
+                image: dadosbackend:v1
+                container_name: "dadosBackend"
+                build:
+                        dockerfile: src/Dockerfile
+                environment:
+                        - VIRTUAL_HOST=dadosb.gxog.xyz
+                        - LETSENCRYPT_HOST=dadosb.gxog.xyz
+                networks:
+                        net:
+                                ipv4_address: 172.18.0.160
+volumes:
+        certs:
+        html:
+        vhost:
+        dhparam:
+networks:
+        net:
+                external: true
+                ipam:
+                        config:
+                                - subnet: 172.18.0.0/16  

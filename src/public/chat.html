@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chat Room</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<div class="container">
+		<h1>Chat Room</h1>
+		<div id="chat-window"></div>
+		<form id="chat-form">
+			<input type="text" id="msg-input" placeholder="Type your message" required>
+			<button type="submit">Send</button>
+		</form>
+	</div>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		const socket = io();
+		const username = localStorage.getItem('username');
+		const room = new URLSearchParams(window.location.search).get('room');
+		socket.emit('join-room', username, room);
+		const chatWindow = document.getElementById('chat-window');
+		socket.on('receive-msg', (username, msg) => {
+			const msgElement = document.createElement('div');
+			msgElement.textContent = `${username}: ${msg}`;
+			chatWindow.appendChild(msgElement);
+		});
+
+        	const form = document.getElementById('chat-form');
+        	form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const message = document.getElementById('msg-input').value;
+			socket.emit('send-msg', message);
+			document.getElementById('msg-input').value = '';
+		});
+	</script>
+</body>
+</html>
